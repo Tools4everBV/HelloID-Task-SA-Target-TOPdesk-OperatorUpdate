@@ -27,7 +27,7 @@ $userId = $form.id
 $userDisplayName = $formObject.surName + ", " + $formObject.firstName + " " + $formObject.prefixes
 
 try {
-    Write-Information "Executing TOPdesk action: [UpdateAccount] for: [$($userDisplayName)]"
+    Write-Information "Executing TOPdesk action: [UpdateOperatorAccount] for: [$($userDisplayName)]"
     Write-Verbose "Creating authorization headers"
     # Create authorization headers with TOPdesk API key
     $pair = "${topdeskApiUsername}:${topdeskApiSecret}"
@@ -39,7 +39,7 @@ try {
         "Accept"        = "application/json"
     }
 
-    Write-Verbose "Creating TOPdeskAccount for: [$($userDisplayName)]"
+    Write-Verbose "Updating TOPdesk Operator for: [$($userDisplayName)]"
     $splatUpdateUserParams = @{
         Uri         = "$($topdeskBaseUrl)/tas/api/operators/id/$($userId)"
         Method      = "PATCH"
@@ -55,12 +55,12 @@ try {
         System            = "TOPdesk"
         TargetIdentifier  = [String]$response.id
         TargetDisplayName = [String]$response.dynamicName
-        Message           = "TOPdesk action: [UpdateAccount] for: [$($userDisplayName)] executed successfully"
+        Message           = "TOPdesk action: [UpdateOperatorAccount] for: [$($userDisplayName)] executed successfully"
         IsError           = $false
     }
     Write-Information -Tags "Audit" -MessageData $auditLog
 
-    Write-Information "TOPdesk action: [UpdateAccount] for: [$($userDisplayName)] executed successfully"
+    Write-Information "TOPdesk action: [UpdateOperatorAccount] for: [$($userDisplayName)] executed successfully"
 }
 catch {
     $ex = $_
@@ -69,14 +69,14 @@ catch {
         System            = "TOPdesk"
         TargetIdentifier  = ""
         TargetDisplayName = [String]$userDisplayName
-        Message           = "Could not execute TOPdesk action: [UpdateAccount] for: [$($userDisplayName)], error: $($ex.Exception.Message)"
+        Message           = "Could not execute TOPdesk action: [UpdateOperatorAccount] for: [$($userDisplayName)], error: $($ex.Exception.Message)"
         IsError           = $true
     }
     if ($($ex.Exception.GetType().FullName -eq "Microsoft.PowerShell.Commands.HttpResponseException")) {
-        $auditLog.Message = "Could not execute TOPdesk action: [UpdateAccount] for: [$($userDisplayName)]"
-        Write-Error "Could not execute TOPdesk action: [UpdateAccount] for: [$($userDisplayName)], error: $($ex.ErrorDetails)"
+        $auditLog.Message = "Could not execute TOPdesk action: [UpdateOperatorAccount] for: [$($userDisplayName)]"
+        Write-Error "Could not execute TOPdesk action: [UpdateOperatorAccount] for: [$($userDisplayName)], error: $($ex.ErrorDetails)"
     }
     Write-Information -Tags "Audit" -MessageData $auditLog
-    Write-Error "Could not execute TOPdesk action: [UpdateAccount] for: [$($userDisplayName)], error: $($ex.Exception.Message)"
+    Write-Error "Could not execute TOPdesk action: [UpdateOperatorAccount] for: [$($userDisplayName)], error: $($ex.Exception.Message)"
 }
 ###########################################################
